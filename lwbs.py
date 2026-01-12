@@ -13,7 +13,7 @@ print(r"""___       ___       __   ________  ________
     \|_______|\|____________|\|_______|\_________\
                                       \|_________|
                 - lightweight board shell""")
-print("       [v1.1 stable = LTS]")
+print("       [v1.2 stable = LTS]")
 gc.collect()
 print("      free ram : {} bytes".format(gc.mem_free()))
 print("      used ram : {} bytes".format(gc.mem_alloc()))
@@ -74,7 +74,7 @@ def shell():
             args = line[1:]
             print(args)
             if cmd == "help":
-                print("ls, cd, pwd, free, cpu, echo, cat, rm, mkdir, led, reset, info, exit")
+                print("ls, cd, pwd, free, cpu, echo, cat, rm, mkdir, led, reset, info, exit, collect")
             elif cmd == "ls":
                 print("  ".join(os.listdir()))
             elif cmd == "pwd":
@@ -82,7 +82,6 @@ def shell():
             elif cmd == "cd":
                 os.chdir(args[0] if args else "/")
             elif cmd == "free":
-                gc.collect()
                 print("F: {} U: {}".format(gc.mem_free(), gc.mem_alloc()))
             elif cmd == "cpu":
                 if args: machine.freq(int(args[0]))
@@ -105,6 +104,11 @@ def shell():
                 machine.reset()
             elif cmd == "ed":
                 ed(args[0] if args else "new.txt")
+            elif cmd == "collect":
+                d = gc.mem_free()
+                gc.collect()
+                d = gc.mem_free() - d
+                print("freed {} bytes".format(d))
             elif cmd == "exit":
                 break
             else:
@@ -113,3 +117,5 @@ def shell():
             print("err:", e)
 
 shell()
+
+
